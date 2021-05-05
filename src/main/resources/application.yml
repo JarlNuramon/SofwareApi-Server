@@ -1,0 +1,27 @@
+
+spring:
+  datasource:
+    url: jdbc:h2:~/data/demo2
+    username: sa
+    password: Projects@123
+    driverClassName: org.h2.Driver
+  h2:
+   console:
+      path: /h2
+      enabled: true
+      settings:
+        web-allow-others: true
+  jpa:
+    show-sql: false
+    hibernate: 
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        jdbc:
+          batch-size: 50
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
