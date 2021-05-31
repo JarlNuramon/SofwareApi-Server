@@ -1,4 +1,4 @@
-package de.hs.bochum.buisnessEmu;
+package de.hs.bochum.buisness.emu;
 
 import net.sf.yad2xx.*;
 
@@ -25,6 +25,7 @@ public class EmuCheckConnection extends Thread {
 
 		System.out.println("Verbunden mit Device: " + device.getDescription());
 		this.start();
+	
 	}
 
 	public void connect() throws FTDIException {
@@ -49,7 +50,7 @@ public class EmuCheckConnection extends Thread {
 
 	public void sendRequest(MESSWERT m) throws FTDIException {
 		device.write(m.getRequest());
-		System.out.println("Request " + m.getObis() + " " + m.toString());
+		//System.out.println("Request " + m.getObis() + " " + m.toString());
 		ergSchreiben = true;
 	}
 
@@ -71,7 +72,7 @@ public class EmuCheckConnection extends Thread {
 				e.printStackTrace();
 			}
 			try {
-				sleep(5);
+				sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -84,6 +85,7 @@ public class EmuCheckConnection extends Thread {
 			int m = ergebnis.indexOf('*');
 			ergebnis = ergebnis.substring(a + 1, m);
 		}
+		System.out.println("ergebnis = "+ergebnis);
 		return Double.parseDouble(ergebnis);
 	}
 

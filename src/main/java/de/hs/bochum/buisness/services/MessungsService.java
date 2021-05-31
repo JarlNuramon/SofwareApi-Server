@@ -1,12 +1,16 @@
-package de.hs.bochum.buisnessEmu;
+package de.hs.bochum.buisness.services;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.hs.bochum.buisness.emu.EmuCheckConnection;
+import de.hs.bochum.buisness.emu.MESSWERT;
 import de.hs.bochum.messung.Messreihe;
 import de.hs.bochum.messung.Messung;
 import de.hs.bochum.repository.MessungsRepository;
@@ -19,27 +23,45 @@ public class MessungsService {
 	private MessungsRepository messRepository;
 	
 	
+	public List<Messreihe> getAlleMessungen(){
+		return messRepository.findAll();
+	}
 	public Optional<Messreihe> getMessungById(int id) {
 		return messRepository.findById(id);
 	}
 	
-	
-	public Messreihe startMessung(int zeitIntervall, String verbraucher,String messgroesse, int id) {
-		messung = true;
-		Messreihe m = Messreihe.builder().messreihenId(id).elements(new HashSet<>()).zeitintervall(zeitIntervall)
+	public void erstellMessung(int zeitIntervall, String verbraucher,String messgroesse, int id) {
+		Messreihe m = Messreihe.builder().messreihenId(id).elements(new ArrayList<>()).zeitintervall(zeitIntervall)
 				.verbraucher(verbraucher).messgroesse(messgroesse).build();
+		messRepository.save(m);
+	}
+	public Messreihe startMessung(Messreihe m) {
+		messung = true;
 		new Thread() {
 			@Override
 			public void run() {
+				EmuCheckConnection ecc = null;
 				try {
-					EmuCheckConnection ecc = new EmuCheckConnection();
+					ecc= new EmuCheckConnection();
 					ecc.connect();
+					Thread.sleep(1000);
+					ecc.sendProgrammingMode();
+					Thread.sleep(1000);
 					while (messung) {
-						ecc.sendRequest(MESSWERT.valueOf(messgroesse));
-						Thread.sleep(zeitIntervall * 100);
-						m.getElements().add(Messung.builder().parent(m).wert(ecc.gibErgebnisAus()).build());
+						ecc.sendRequest(MESSWERT.valueOf(m.getMessgroesse()));
+						Thread.sleep(m.getZeitintervall() * 100);
+						m.getElements().add(Messung.builder().parent(m).wert(ecc.gibErgebnisAus()).laufendeNummer(m.getElements().size()).build());
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
+				}finally {
+					if(ecc!=null)
+						try {
+							ecc.disconnect();
+						} catch (FTDIException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 				}
 
 			}
@@ -51,7 +73,7 @@ public class MessungsService {
 		messRepository.save(m);
 	}
 
-	private static void main(String[] args) {
+	public static void main(String[] args) {
 		try {
 			boolean b = true;
 			EmuCheckConnection ecc = new EmuCheckConnection();
@@ -76,7 +98,7 @@ public class MessungsService {
 					ecc.sendRequest(MESSWERT.Text);
 					break;
 				case "messen":
-					ecc.sendRequest(MESSWERT.Leistung);
+					ecc.sendRequest(MESSWERT.Scheinleistung);
 					break;
 				default:
 					System.out.println("Falscher Befehl!");

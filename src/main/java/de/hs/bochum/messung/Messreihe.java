@@ -1,5 +1,6 @@
 package de.hs.bochum.messung;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
 @AllArgsConstructor
 public class Messreihe {
@@ -28,8 +28,8 @@ public class Messreihe {
 	private int zeitintervall;
 	private String verbraucher;
 	private String messgroesse;
-	@OneToMany(mappedBy = "messreihe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Messung> elements;
+	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Messung> elements;
 	
 	
 	public String gibAttributeAus(){

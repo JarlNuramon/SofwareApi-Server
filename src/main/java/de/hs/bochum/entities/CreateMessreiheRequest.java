@@ -1,9 +1,9 @@
-package de.hs.bochum.controller;
+package de.hs.bochum.entities;
 
 import lombok.Data;
 
 @Data
-public class StartMessungRequest {
+public class CreateMessreiheRequest {
 
 	private int zeitIntervall;
 	private String verbraucher;

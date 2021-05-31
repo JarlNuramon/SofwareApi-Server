@@ -1,4 +1,4 @@
-package de.hs.bochum.buisnessEmu;
+package de.hs.bochum.buisness.emu;
 
 public enum MESSWERT {
 		
@@ -20,8 +20,10 @@ public enum MESSWERT {
 	Kapazitive_Blindleistung("4.7.1", new byte[]{1,82,49,2,52,46,55,46,49,40,41,3}, "VAR"),
 	Leistungsfaktor("13.7", new byte[]{1,82,49,2,49,51,46,55,40,41,3}, "cos Phi"),
 	Seriennummer("96.1.0", new byte[]{1,82,49,2,57,54,46,49,46,48,40,41,3}, "Seriennummer"),
-	Text("128.128", new byte[]{1,82,49,2,49,50,56,46,49,50,56,40,41,3}, "Text");
-	
+	Text("128.128", new byte[]{1,82,49,2,49,50,56,46,49,50,56,40,41,3}, "Text"),
+	Spannung("12.7", new byte[]{1,82,49,2,49,50,46,55,40,41,3}, "V"),
+	Frequenz("14.7", new byte[]{1,82,49,2,49,52,46,55,40,41,3}, "Hz"),
+	Strom("11.7", new byte[]{1,82,49,2,49,49,46,55,40,41,3}, "A");
 	private byte[] request;
 	private String obis, einheit;
 	
