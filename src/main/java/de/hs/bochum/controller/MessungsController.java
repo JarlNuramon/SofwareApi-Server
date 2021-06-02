@@ -53,7 +53,7 @@ public class MessungsController {
 	public ResponseEntity<String> erstellMessreihe(@RequestBody CreateMessreiheRequest request) throws Exception{
 		try {
 		messService.erstellMessung(request.getZeitIntervall(), request.getVerbraucher(),request.getMessgroesse(), request.getId());
-		return ResponseEntity.ok("success");
+		return ResponseEntity.ok().build();
 		}catch(Exception e) {
 			return ResponseEntity.status(400).body("MessungsId existiert schon");
 		}
@@ -62,12 +62,12 @@ public class MessungsController {
 	@DeleteMapping(value = "messung/{id}")
 	@ApiResponse(responseCode = "200", description = "Löscht eine Messung mit der ID.")
 	@ApiResponse(responseCode = "400", description = "Messung mit der ID wird noch durchgeführt")
-	@Operation(summary = "Messung wird erstellt")
+	@Operation(summary = "Messung wird gelöscht")
 	public ResponseEntity<String> erstellMessreihe(@PathVariable("id") int id) throws Exception{
 			if(aktuelleMessung !=null && aktuelleMessung.getMessreihenId() ==id)
 				return ResponseEntity.status(400).body("Messung mit dieser ID wird zeitlich durchgeführt. Erst speichern dann löschen.");
 			messService.deleteMessreihe(id);
-		return ResponseEntity.ok("success");
+		return ResponseEntity.ok().build();
 	
 	}
 	
@@ -79,13 +79,13 @@ public class MessungsController {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = Messreihe.class)) })
 	@ApiResponse(responseCode = "403", description = "Eine Messung lief schon")
 	@Operation(summary = "Messung wird gestartet")
-	public ResponseEntity<String> startMessreihe(@PathVariable("id") int id) {
+	public ResponseEntity startMessreihe(@PathVariable("id") int id) {
 		Optional<Messreihe> m = messService.getMessungById(id);
 		if(!m.isPresent())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Not found");
 		if(aktuelleMessung==null) {
 			aktuelleMessung = messService.startMessung(m.get());
-		return ResponseEntity.ok("success");
+		return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).build();
 	}
