@@ -1,4 +1,4 @@
-package de.hs.bochum.entities;
+package de.hs.bochum.dto;
 
 import lombok.Data;
 

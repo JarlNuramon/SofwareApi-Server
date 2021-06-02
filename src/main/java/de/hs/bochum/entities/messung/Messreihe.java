@@ -1,4 +1,4 @@
-package de.hs.bochum.messung;
+package de.hs.bochum.entities.messung;
 
 import java.util.List;
 import java.util.Set;

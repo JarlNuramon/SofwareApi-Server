@@ -1,4 +1,4 @@
-package de.hs.bochum.messung;
+package de.hs.bochum.entities.messung;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,7 +29,6 @@ public class Messung {
 	private Messreihe parent;
 	private double wert;
 	private int laufendeNummer;
-	
 	public String gibAttributeAus(){
 		return this.laufendeNummer + " " + this.wert;
 	}
