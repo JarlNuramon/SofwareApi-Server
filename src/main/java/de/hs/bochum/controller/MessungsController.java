@@ -63,7 +63,7 @@ public class MessungsController {
 	@ApiResponse(responseCode = "200", description = "Löscht eine Messung mit der ID.")
 	@ApiResponse(responseCode = "400", description = "Messung mit der ID wird noch durchgeführt")
 	@Operation(summary = "Messung wird gelöscht")
-	public ResponseEntity<String> erstellMessreihe(@PathVariable("id") int id) throws Exception{
+	public ResponseEntity<String> deleteMessreihe(@PathVariable("id") int id) throws Exception{
 			if(aktuelleMessung !=null && aktuelleMessung.getMessreihenId() ==id)
 				return ResponseEntity.status(400).body("Messung mit dieser ID wird zeitlich durchgeführt. Erst speichern dann löschen.");
 			messService.deleteMessreihe(id);

@@ -1,0 +1,12 @@
+<story path="berechnungen/berechnungen.story" title="berechnen Sample story">
+<narrative keyword="Narrative:">
+  <inOrderTo keyword="In order to">compute sums functionality</inOrderTo>
+  <asA keyword="As a">student</asA>
+  <iWantTo keyword="I want to">show how JBehave works</iWantTo>
+</narrative>
+<scenario keyword="Scenario:" title="check 5 + 6 = 11">
+<step outcome="successful">Given The current value is <parameter>5</parameter></step>
+<step outcome="successful">When I add <parameter>6</parameter> to the current value</step>
+<step outcome="successful">Then I should see the result <parameter>11</parameter></step>
+</scenario>
+</story>

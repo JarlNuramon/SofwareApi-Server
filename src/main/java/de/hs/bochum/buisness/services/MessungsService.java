@@ -14,14 +14,19 @@ import de.hs.bochum.buisness.emu.MESSWERT;
 import de.hs.bochum.entities.messung.Messreihe;
 import de.hs.bochum.entities.messung.Messung;
 import de.hs.bochum.repository.MessungsRepository;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.sf.yad2xx.FTDIException;
 
 @Service
+@Setter
+@Getter
 public class MessungsService {
 	boolean messung = false;
 	@Autowired
-	private MessungsRepository messRepository;
-	
+	private  MessungsRepository messRepository;
+	private EmuCheckConnection ecc;
 	
 	public List<Messreihe> getAlleMessungen(){
 		return messRepository.findAll();
@@ -37,12 +42,19 @@ public class MessungsService {
 				.verbraucher(verbraucher).messgroesse(messgroesse).build();
 		messRepository.save(m);
 	}
+	public void alternativeErstellMessung(int zeitIntervall, String verbraucher,String messgroesse, int id) {
+		if(messRepository.findById(id).isPresent())
+			throw new IllegalArgumentException("Id already present");
+		Messreihe m = Messreihe.builder().messreihenId(id).elements(new ArrayList<>()).zeitintervall(zeitIntervall)
+				.verbraucher(verbraucher).messgroesse(messgroesse).build();
+		messRepository.save(m);
+	}
 	public Messreihe startMessung(Messreihe m) {
 		messung = true;
 		new Thread() {
 			@Override
 			public void run() {
-				EmuCheckConnection ecc = null;
+				 ecc = null;
 				try {
 					ecc= new EmuCheckConnection();
 					ecc.connect();
@@ -52,7 +64,8 @@ public class MessungsService {
 					while (messung) {
 						ecc.sendRequest(MESSWERT.valueOf(m.getMessgroesse()));
 						Thread.sleep(m.getZeitintervall() * 100);
-						m.getElements().add(Messung.builder().parent(m).wert(ecc.gibErgebnisAus()).laufendeNummer(m.getElements().size()).build());
+						double wert = ecc.gibErgebnisAus();
+						addMessungToMessreihe(m, wert);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -119,4 +132,8 @@ public class MessungsService {
 		messRepository.deleteById(id);
 		
 	}
+public Messreihe addMessungToMessreihe(Messreihe m, double wert) {
+	m.getElements().add(Messung.builder().parent(m).wert(wert).laufendeNummer(m.getElements().size()).build());
+	return m;
+}
 }
